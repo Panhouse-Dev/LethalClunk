@@ -11,8 +11,9 @@ namespace LethalClunk.Patches
     [HarmonyPatch(typeof(GrabbableObject))]
     internal class FlashlightBopItPatch
     {
+        
         private static string clipName = "metal_bar.wav";
-        private static string path = Path.Combine(Paths.PluginPath + $"\\{PluginInfo.PLUGIN_NAME}\\");
+        private static string dllDirectory = Path.GetDirectoryName(Plugin.Instance.Info.Location) + "\\";
         private static ManualLogSource logger = BepInEx.Logging.Logger.CreateLogSource(PluginInfo.PLUGIN_NAME);
 
         [HarmonyPatch("Start")]
@@ -22,7 +23,7 @@ namespace LethalClunk.Patches
             var item = __instance.itemProperties;
             if (item.itemName == "Large axle")
             {
-                AudioClip audioClip = await LoadAudioClip(path + clipName);
+                AudioClip audioClip = await LoadAudioClip(dllPath + clipName);
                 if (audioClip != null) {
                     item.dropSFX = audioClip;
                 }
