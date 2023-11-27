@@ -2,7 +2,7 @@
   "name": "LethalClunk",
   "description": "Replaces the Large Axle drop sound with the metal bar meme sound effect.",
   "version_number": "1.0.0",
-  "website_url": "https://github.com/Panhouse-Dev/LC-MetalBarAxle",
+  "website_url": "https://github.com/Panhouse-Dev/LethalClunk",
   "dependencies": [
     "BepInEx-BepInExPack-5.4.2100"
   ]
