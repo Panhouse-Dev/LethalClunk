@@ -6,7 +6,7 @@ using HarmonyLib;
 using UnityEngine;
 using UnityEngine.Networking;
 
-namespace LcMetalBarAxle.Patches
+namespace LethalClunk.Patches
 {
     [HarmonyPatch(typeof(GrabbableObject))]
     internal class FlashlightBopItPatch
