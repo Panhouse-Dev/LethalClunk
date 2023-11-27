@@ -1,6 +1,5 @@
 ﻿using BepInEx;
 using HarmonyLib;
-using System.IO;
 
 namespace LethalClunk
 {
@@ -11,8 +10,6 @@ namespace LethalClunk
         private readonly Harmony harmony = new Harmony(PluginInfo.PLUGIN_NAME);
         private readonly BepInEx.Logging.ManualLogSource logger;
 
-        internal static Plugin? Instance;
-
         public Plugin()
         {
             logger = BepInEx.Logging.Logger.CreateLogSource(PluginInfo.PLUGIN_NAME);
@@ -20,11 +17,6 @@ namespace LethalClunk
 
         public void Awake()
         {
-            if (Instance == null)
-            {
-                Instance = this;
-            }
-
             harmony.PatchAll();
             logger.LogInfo($"Plugin {PluginInfo.PLUGIN_GUID} is loaded!");
         }

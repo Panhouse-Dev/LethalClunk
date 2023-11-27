@@ -1,6 +1,6 @@
 using System.IO;
+using System.Reflection;
 using System.Threading.Tasks;
-using BepInEx;
 using BepInEx.Logging;
 using HarmonyLib;
 using UnityEngine;
@@ -11,9 +11,6 @@ namespace LethalClunk.Patches
     [HarmonyPatch(typeof(GrabbableObject))]
     internal class FlashlightBopItPatch
     {
-        
-        private static string clipName = "metal_bar.wav";
-        private static string dllDirectory = Path.GetDirectoryName(Plugin.Instance.Info.Location) + "\\";
         private static ManualLogSource logger = BepInEx.Logging.Logger.CreateLogSource(PluginInfo.PLUGIN_NAME);
 
         [HarmonyPatch("Start")]
@@ -21,18 +18,17 @@ namespace LethalClunk.Patches
         private static async void ReplaceLargeAxleSFX(GrabbableObject __instance)
         {
             var item = __instance.itemProperties;
+            var audioClip = await LoadAudioClip("metal_bar.wav");
             if (item.itemName == "Large axle")
             {
-                AudioClip audioClip = await LoadAudioClip(dllPath + clipName);
-                if (audioClip != null) {
-                    item.dropSFX = audioClip;
-                }
+                if (audioClip != null) { item.dropSFX = audioClip; }
             }
         }
 
-        private static async Task<AudioClip> LoadAudioClip(string filePath)
+        private static async Task<AudioClip?> LoadAudioClip(string clipName)
         {
-            UnityWebRequest audioClipReq = UnityWebRequestMultimedia.GetAudioClip(filePath, AudioType.WAV);
+            var fullPath = GetAssemblyFullPath(clipName);
+            UnityWebRequest audioClipReq = UnityWebRequestMultimedia.GetAudioClip(fullPath, AudioType.WAV);
             await audioClipReq.SendWebRequest();
             if (audioClipReq.error != null) {
                 logger.LogError(audioClipReq.error);
@@ -40,8 +36,16 @@ namespace LethalClunk.Patches
                 return null;
             }
             AudioClip audioClip = DownloadHandlerAudioClip.GetContent(audioClipReq);
-            audioClip.name = Path.GetFileName(filePath);
+            audioClip.name = Path.GetFileName(fullPath);
             return audioClip;
+        }
+
+        // TODO: Move to common code
+        private static string GetAssemblyFullPath(string? additionalPath)
+        {
+            var assemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var relativePath = additionalPath != null ? Path.Combine(assemblyPath, @$".\{additionalPath}") : assemblyPath;
+            return Path.GetFullPath(relativePath);
         }
     }
 }
