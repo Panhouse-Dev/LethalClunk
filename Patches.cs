@@ -9,7 +9,7 @@ using UnityEngine.Networking;
 namespace LethalClunk.Patches
 {
     [HarmonyPatch(typeof(GrabbableObject))]
-    internal class FlashlightBopItPatch
+    internal class LethalClunkPatch
     {
         private static ManualLogSource logger = BepInEx.Logging.Logger.CreateLogSource(PluginInfo.PLUGIN_NAME);
 
